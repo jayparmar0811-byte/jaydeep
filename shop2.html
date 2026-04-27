@@ -1,0 +1,196 @@
+<!DOCTYPE html>
+<html lang="gu">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Jay Babari Cricket Shop</title>
+
+<style>
+body {
+    margin: 0;
+    font-family: Arial;
+    background-image: url('OIP (3).jpg');
+    background-size: cover;
+    background-position: center;
+}
+
+header {
+    display: flex;
+    justify-content: space-between;
+    background: rgba(0,0,0,0.7);
+    color: white;
+    padding: 10px;
+}
+
+.products {
+    display: grid;
+    grid-template-columns: repeat(3,1fr);
+    gap: 15px;
+    padding: 20px;
+}
+
+.product-card {
+    background: white;
+    padding: 15px;
+    border-radius: 10px;
+    text-align: center;
+}
+
+.product-card img {
+    width: 100%;
+    height: 180px;
+    object-fit: contain;
+}
+
+.cart-section {
+    background: lightgreen;
+    padding: 15px;
+    position: fixed;
+    bottom: 0;
+    width: 100%;
+}
+
+#order-form {
+    display: none;
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    background: white;
+    padding: 20px;
+    border-radius: 10px;
+    width: 300px;
+}
+
+input {
+    width: 100%;
+    padding: 8px;
+    margin: 5px 0;
+}
+
+button {
+    background: #28a745;
+    padding: 8px;
+    border: none;
+    cursor: pointer;
+    color: white;
+    border-radius: 5px;
+}
+</style>
+</head>
+
+<body>
+
+<header>
+    <h2>no 1 sports</h2>
+    <h5>mack your future in sports</h5>
+    <div>🛒 Cart: <span id="cart-count">0</span></div>
+</header>
+
+<section class="products" id="product-list"></section>
+
+<div class="cart-section">
+    <div id="cart-items"></div>
+    <p>Total ₹<span id="total-price">0</span></p>
+    <button onclick="checkout()">Buy Now</button>
+</div>
+
+<div id="order-form">
+    <h3>Buyer Details</h3>
+    <input type="text" id="name" placeholder="Name">
+    <input type="text" id="mobile" placeholder="Mobile Number">
+    <input type="text" id="address" placeholder="Address">
+    <button onclick="submitOrder()">Submit Order</button>
+</div>
+
+<script>
+const products = [
+    { id: 1, name: "Plastic Bat", price: 150, image:"Cricket-Bat-Transparent-Images.png"},
+    { id: 2, name: "Hard Tennis Bat 1", price: 350, image: "OIP.jpg"},
+    { id: 3, name: "Hard Tennis Bat 2", price: 350, image: "OIP (1).jpg"},
+    { id: 4, name: "Hard Tennis Bat 3", price: 350, image: "OIP (2).jpg"}
+];
+
+let cart = [];
+
+function render() {
+    const list = document.getElementById('product-list');
+    list.innerHTML = products.map(p => `
+        <div class="product-card">
+            <img src="${p.image}">
+            <h3>${p.name}</h3>
+            <p>₹${p.price}</p>
+            <button onclick="addToCart(${p.id})">Add</button>
+        </div>
+    `).join('');
+}
+
+function addToCart(id) {
+    const item = products.find(p => p.id === id);
+    cart.push(item);
+    updateCart();
+}
+
+function updateCart() {
+    document.getElementById('cart-count').innerText = cart.length;
+
+    document.getElementById('cart-items').innerHTML =
+        cart.map(i => `${i.name} (₹${i.price})`).join(' | ');
+
+    const total = cart.reduce((sum,i)=>sum+i.price,0);
+    document.getElementById('total-price').innerText = total;
+}
+
+function checkout() {
+    if(cart.length === 0){
+        alert("કાર્ટ ખાલી છે!");
+        return;
+    }
+    document.getElementById('order-form').style.display = "block";
+}
+
+/* 🔥 FIXED WHATSAPP ORDER */
+function submitOrder() {
+    const name = document.getElementById('name').value;
+    const mobile = document.getElementById('mobile').value;
+    const address = document.getElementById('address').value;
+
+    if(name === "" || mobile === "" || address === ""){
+        alert("બધી માહિતી ભરો!");
+        return;
+    }
+
+    let message = `🧾 New Order - Jay Babari Cricket Shop
+
+👤 Name: ${jaydeep}
+📞 Mobile: ${8980948396}
+📍 Address: ${adalaj}
+
+🛒 Order Details:
+`;
+
+    let total = 0;
+
+    cart.forEach((item, index) => {
+        message += `${index+1}. ${item.name} - ₹${item.price}\n`;
+        total += item.price;
+    });
+
+    message += `\n💰 Total: ₹${total}`;
+
+    let phone = "8980948396"; // 🔴 તમારો નંબર મૂકો
+
+    let url = "https://wa.me/" + 8980948396 + "?text=" + encodeURIComponent(message);
+
+    window.open(url, "_blank");
+
+    cart = [];
+    updateCart();
+    document.getElementById('order-form').style.display = "none";
+}
+
+render();
+</script>
+
+</body>
+</html>
